@@ -1,0 +1,11 @@
+﻿<resources>
+    <string name="app_name">ListMvvmAndroid</string>
+    <string name="action_settings">Settings</string>
+    <string name="description_hint">Descripción</string>
+    <string name="category_hint">Categoría</string>
+    <string name="submit_button">Agregar</string>
+    <string name="clear_list_button">Limpiar lista</string>    
+    <string name="title_hint">Título de la tarea</string>
+    <string name="doneButton">Hecho</string>
+</resources>
+
