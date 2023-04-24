@@ -36,20 +36,21 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Agregar" />
+            android:text="Agregar"
+            android:layout_margin="10dp"/>
 
         <Button
             android:id="@+id/clearListButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Limpiar lista" />
+            android:text="Limpiar lista"
+            android:layout_margin="10dp"/>
     </LinearLayout>
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 
 </LinearLayout>

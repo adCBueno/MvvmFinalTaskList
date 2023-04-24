@@ -5,117 +5,157 @@ using CommunityToolkit.Mvvm.Input;
 using Core.ViewModels;
 using System.Collections.ObjectModel;
 using Foundation;
+using Core;
+using ListMvvmiOS;
 
 namespace ListMvvmIOS
 {
     public partial class ViewController : UIViewController
     {
-        private MainViewModel ViewModel { get; } = new MainViewModel();
+        private MainViewModel _viewModel;
+        private UITextField _titleTextField;
+        private UITextField _descriptionTextField;
+        private UITextField _categoryTextField;
+        private UIButton _submitButton;
+        private UIButton _clearListButton;
+        private UITableView _tableView;
 
-        private UITextField textField;
-        private UIButton submitButton;
-        private UIButton clearListButton;
-        private UITableView tableView;
-
-        public ViewController(IntPtr handle) : base(handle) { }
+        public ViewController()
+        {
+            _viewModel = new MainViewModel();
+        }
 
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-            SetupUserInterface();
-            SetupBindings();
+
+            View.BackgroundColor = UIColor.White;
+
+            _titleTextField = new UITextField
+            {
+                Placeholder = "Task title",
+                BorderStyle = UITextBorderStyle.RoundedRect
+            };
+
+            _descriptionTextField = new UITextField
+            {
+                Placeholder = "Task description",
+                BorderStyle = UITextBorderStyle.RoundedRect
+            };
+
+            _categoryTextField = new UITextField
+            {
+                Placeholder = "Task category",
+                BorderStyle = UITextBorderStyle.RoundedRect
+            };
+
+            _submitButton = UIButton.FromType(UIButtonType.System);
+            _submitButton.SetTitle("Add task", UIControlState.Normal);
+
+            _clearListButton = UIButton.FromType(UIButtonType.System);
+            _clearListButton.SetTitle("Clear list", UIControlState.Normal);
+
+            _tableView = new UITableView();
+
+            AddSubviewsAndConstraints();
+
+            WireUpEvents();
+            UpdateTableView();
         }
 
-        private void SetupUserInterface()
+        private void AddSubviewsAndConstraints()
         {
-            textField = new UITextField
-            {
-                Frame = new CoreGraphics.CGRect(20, 80, View.Bounds.Width - 40, 40),
-                BorderStyle = UITextBorderStyle.RoundedRect,
-                Placeholder = "Escribe algo aquí"
-            };
-            View.AddSubview(textField);
+            View.AddSubview(_titleTextField);
+            View.AddSubview(_descriptionTextField);
+            View.AddSubview(_categoryTextField);
+            View.AddSubview(_submitButton);
+            View.AddSubview(_clearListButton);
+            View.AddSubview(_tableView);
 
-            submitButton = new UIButton(UIButtonType.System)
-            {
-                Frame = new CoreGraphics.CGRect(20, 130, (View.Bounds.Width - 60) / 2, 40),
-                AccessibilityLabel = "Agregar"
-            };
-            submitButton.SetTitle("Agregar", UIControlState.Normal);
-            View.AddSubview(submitButton);
+            _titleTextField.TranslatesAutoresizingMaskIntoConstraints = false;
+            _descriptionTextField.TranslatesAutoresizingMaskIntoConstraints = false;
+            _categoryTextField.TranslatesAutoresizingMaskIntoConstraints = false;
+            _submitButton.TranslatesAutoresizingMaskIntoConstraints = false;
+            _clearListButton.TranslatesAutoresizingMaskIntoConstraints = false;
+            _tableView.TranslatesAutoresizingMaskIntoConstraints = false;
 
-            clearListButton = new UIButton(UIButtonType.System)
+            NSLayoutConstraint.ActivateConstraints(new[]
             {
-                Frame = new CoreGraphics.CGRect(40 + (View.Bounds.Width - 60) / 2, 130, (View.Bounds.Width - 60) / 2, 40),
-                AccessibilityLabel = "Limpiar lista"
-            };
-            clearListButton.SetTitle("Limpiar lista", UIControlState.Normal);
-            View.AddSubview(clearListButton);
+                _titleTextField.TopAnchor.ConstraintEqualTo(View.SafeAreaLayoutGuide.TopAnchor, 16),
+                _titleTextField.LeadingAnchor.ConstraintEqualTo(View.LeadingAnchor, 16),
+                _titleTextField.TrailingAnchor.ConstraintEqualTo(View.TrailingAnchor, -16),
 
-            tableView = new UITableView
-            {
-                Frame = new CoreGraphics.CGRect(20, 180, View.Bounds.Width - 40, View.Bounds.Height - 200),
-                AccessibilityLabel = "Lista"
-            };
-            View.AddSubview(tableView);
+                _descriptionTextField.TopAnchor.ConstraintEqualTo(_titleTextField.BottomAnchor, 16),
+                _descriptionTextField.LeadingAnchor.ConstraintEqualTo(_titleTextField.LeadingAnchor),
+                _descriptionTextField.TrailingAnchor.ConstraintEqualTo(_titleTextField.TrailingAnchor),
+
+                _categoryTextField.TopAnchor.ConstraintEqualTo(_descriptionTextField.BottomAnchor, 16),
+                _categoryTextField.LeadingAnchor.ConstraintEqualTo(_descriptionTextField.LeadingAnchor),
+                _categoryTextField.TrailingAnchor.ConstraintEqualTo(_descriptionTextField.TrailingAnchor),
+
+                _submitButton.TopAnchor.ConstraintEqualTo(_categoryTextField.BottomAnchor, 16),
+                _submitButton.LeadingAnchor.ConstraintEqualTo(_categoryTextField.LeadingAnchor),
+
+                _clearListButton.LeadingAnchor.ConstraintEqualTo(_submitButton.TrailingAnchor, 16),
+                _clearListButton.CenterYAnchor.ConstraintEqualTo(_submitButton.CenterYAnchor),
+
+                _tableView.TopAnchor.ConstraintEqualTo(_submitButton.BottomAnchor, 16),
+                _tableView.LeadingAnchor.ConstraintEqualTo(View.LeadingAnchor),
+                _tableView.TrailingAnchor.ConstraintEqualTo(View.TrailingAnchor),
+                _tableView.BottomAnchor.ConstraintEqualTo(View.BottomAnchor)
+            });
         }
 
-        private void SetupBindings()
+        private void WireUpEvents()
         {
-            textField.EditingChanged += (s, e) =>
+            _submitButton.TouchUpInside += (s, e) =>
             {
-                ViewModel.Text = textField.Text;
-                submitButton.Enabled = ViewModel.SubmitCommand.CanExecute(null);
-                clearListButton.Enabled = ViewModel.ClearListCommand.CanExecute(null);
-            };
-
-            submitButton.TouchUpInside += (s, e) =>
-            {
-                if (ViewModel.SubmitCommand.CanExecute(null))
+                if (_viewModel.SubmitCommand.CanExecute(null))
                 {
-                    ViewModel.SubmitCommand.Execute(null);
+                    _viewModel.SubmitCommand.Execute(null);
+                    UpdateTableView();
+                }
+                _titleTextField.Text = "";
+                _descriptionTextField.Text = "";
+                _categoryTextField.Text = "";
+            };
+
+            _clearListButton.TouchUpInside += (s, e) =>
+            {
+                if (_viewModel.ClearListCommand.CanExecute(null))
+                {
+                    _viewModel.ClearListCommand.Execute(null);
+                    UpdateTableView();
                 }
             };
 
-            clearListButton.TouchUpInside += (s, e) =>
+            _tableView.Source = new TaskItemTableViewSource(_viewModel.Items, rowSelected =>
             {
-                if (ViewModel.ClearListCommand.CanExecute(null))
-                {
-                    ViewModel.ClearListCommand.Execute(null);
-                }
+                TaskItem selectedTask = _viewModel.Items[rowSelected];
+
+                TaskDetailViewController taskDetailViewController = new TaskDetailViewController(selectedTask, _viewModel);
+                NavigationController.PushViewController(taskDetailViewController, true);
+            });
+
+            _viewModel.Items.CollectionChanged += (s, e) =>
+            {
+                UpdateTableView();
             };
 
-            ViewModel.SubmitCommand.CanExecuteChanged += (s, e) => submitButton.Enabled = ViewModel.SubmitCommand.CanExecute(null);
-            ViewModel.ClearListCommand.CanExecuteChanged += (s, e) => clearListButton.Enabled = ViewModel.ClearListCommand.CanExecute(null);
-
-            ViewModel.Items.CollectionChanged += (s, e) => tableView.ReloadData();
-            tableView.DataSource = new ListDataSource(ViewModel.Items);
-
-            submitButton.Enabled = ViewModel.SubmitCommand.CanExecute(null);
-            clearListButton.Enabled = ViewModel.ClearListCommand.CanExecute(null);
+            UpdateTableView();
         }
 
-        private class ListDataSource : UITableViewDataSource
+        private void UpdateTableView()
         {
-            private readonly ObservableCollection<string> _items;
-
-            public ListDataSource(ObservableCollection<string> items)
+            _tableView.Source = new TaskItemTableViewSource(_viewModel.Items, rowSelected =>
             {
-                _items = items;
-            }
+                TaskItem selectedTask = _viewModel.Items[rowSelected];
 
-            public override nint RowsInSection(UITableView tableView, nint section)
-            {
-                return _items.Count;
-            }
-
-            public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
-            {
-                var cell = tableView.DequeueReusableCell("itemCell") ?? new UITableViewCell(UITableViewCellStyle.Default, "itemCell");
-
-                cell.TextLabel.Text = _items[indexPath.Row];
-                return cell;
-            }
+                TaskDetailViewController taskDetailViewController = new TaskDetailViewController(selectedTask, _viewModel);
+                NavigationController.PushViewController(taskDetailViewController, true);
+            });
+            _tableView.ReloadData();
         }
+
     }
 }

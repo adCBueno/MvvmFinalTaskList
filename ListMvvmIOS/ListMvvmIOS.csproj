@@ -136,6 +136,10 @@
         <Compile Include="ViewController.designer.cs">
             <DependentUpon>ViewController.cs</DependentUpon>
         </Compile>
+        <Compile Include="TaskItemCell.cs" />
+        <Compile Include="TaskDetailViewController.cs" />
+        <Compile Include="TaskItemSource.cs" />
+        <Compile Include="TaskItemTableViewSource.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Core\Core.csproj">

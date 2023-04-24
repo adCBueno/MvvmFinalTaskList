@@ -56,16 +56,15 @@ namespace ListMvvmAndroid
             deleteTaskButton.Click += (s, e) =>
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this.Activity);
-                builder.SetTitle("Eliminar tarea");
-                builder.SetMessage("¿Estás seguro de que deseas eliminar esta tarea?");
-                builder.SetPositiveButton("Sí", (sender, args) =>
+                builder.SetTitle(Constants.Constants.DeleteTask);
+                builder.SetMessage(Constants.Constants.MessageDeleteTask);
+                builder.SetPositiveButton(Constants.Constants.Yes, (sender, args) =>
                 {
                     _mainViewModel.Items.Remove(_taskItem);
-                    Toast.MakeText(Activity, "La tarea se eliminó exitosamente", ToastLength.Short).Show();
-                    ParentFragmentManager.PopBackStack();
-                });
-
-                builder.SetNegativeButton("No", (sender, args) => {});
+                    Toast.MakeText(Activity, Constants.Constants.MessageDeleteTaskSuccess, ToastLength.Short).Show();
+                    ParentFragmentManager.PopBackStack();                    
+                });                
+                builder.SetNegativeButton(Constants.Constants.No, (sender, args) => {});
                 AlertDialog dialog = builder.Create();
                 dialog.Show();
             };
@@ -91,13 +90,11 @@ namespace ListMvvmAndroid
         {
             if (_taskItem.IsComplete)
             {
-                doneButton.SetBackgroundColor(Color.Red);
-                doneButton.Text = "Pendiente";
+                doneButton.Text = Constants.Constants.Pending;
             }
             else
             {
-                doneButton.SetBackgroundColor(Color.ParseColor("#2196F3"));
-                doneButton.Text = "Hecho";
+                doneButton.Text = Constants.Constants.Done;
             }
         }
     }

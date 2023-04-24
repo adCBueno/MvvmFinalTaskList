@@ -16,7 +16,7 @@ using AndroidX.Lifecycle;
 
 namespace ListMvvmAndroid
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme.NoActionBar", MainLauncher = true)]
+    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
     public class MainActivity : AppCompatActivity
     {
         private MainViewModel _viewModel;
@@ -78,13 +78,13 @@ namespace ListMvvmAndroid
             {
                 TaskItem selectedTask = _viewModel.Items[e.Position];
 
-                TaskDetailFragment taskDetailFragment = (TaskDetailFragment)SupportFragmentManager.FindFragmentByTag("TaskDetailFragment");
+                TaskDetailFragment taskDetailFragment = (TaskDetailFragment)SupportFragmentManager.FindFragmentByTag(Constants.Constants.TaskDetailFragment);
                 if (taskDetailFragment == null)
                 {
                     taskDetailFragment = TaskDetailFragment.NewInstance(selectedTask, _viewModel);
                     SupportFragmentManager.BeginTransaction()
                         .AddToBackStack(null)
-                        .Add(Android.Resource.Id.Content, taskDetailFragment, "TaskDetailFragment")
+                        .Add(Android.Resource.Id.Content, taskDetailFragment, Constants.Constants.TaskDetailFragment)
                         .Commit();
                 }
                 else
