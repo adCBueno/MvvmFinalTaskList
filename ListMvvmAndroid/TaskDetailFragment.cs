@@ -37,8 +37,8 @@ namespace ListMvvmAndroid
             TextView titleTextView = view.FindViewById<TextView>(Resource.Id.titleTextView);
             TextView descriptionTextView = view.FindViewById<TextView>(Resource.Id.descriptionTextView);
             TextView categoryTextView = view.FindViewById<TextView>(Resource.Id.categoryTextView);
-            doneButton = view.FindViewById<Button>(Resource.Id.doneButton);
             Button deleteTaskButton = view.FindViewById<Button>(Resource.Id.deleteTaskButton);
+            doneButton = view.FindViewById<Button>(Resource.Id.doneButton);
 
             titleTextView.Text = _taskItem.Title;
             descriptionTextView.Text = _taskItem.Description;

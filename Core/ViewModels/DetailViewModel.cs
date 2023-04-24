@@ -16,10 +16,10 @@ namespace Core.ViewModels
         {
             _taskItem = taskItem;
             _mainViewModel = mainViewModel;
-            ToggleCompleteCommand = new RelayCommand(ToggleComplete);
+            ToggleCompleteCommand = new RelayCommand(TaskComplete);
         }
 
-        private void ToggleComplete()
+        private void TaskComplete()
         {
             _taskItem.IsComplete = !_taskItem.IsComplete;
             _mainViewModel.UpdateTaskItem(_taskItem);
