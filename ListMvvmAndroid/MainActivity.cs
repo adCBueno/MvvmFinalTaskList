@@ -60,6 +60,9 @@ namespace ListMvvmAndroid
                     _viewModel.SubmitCommand.Execute(null);
                     UpdateListView(listView);
                 }
+                titleEditText.Text = "";
+                descriptionEditText.Text = "";
+                categoryEditText.Text = "";
             };
 
             clearListButton.Click += (s, e) =>

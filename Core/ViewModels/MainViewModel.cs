@@ -62,12 +62,13 @@ namespace Core.ViewModels
             Items.Clear();
         }
 
-        public void UpdateTaskItem(TaskItem taskItem)
+        public void UpdateTaskItem(TaskItem updatedTaskItem)
         {
-            var index = Items.IndexOf(taskItem);
+            int index = Items.IndexOf(updatedTaskItem);
             if (index >= 0)
             {
-                Items[index] = taskItem;
+                Items[index] = updatedTaskItem;
+                OnPropertyChanged(nameof(Items));
             }
         }
     }
