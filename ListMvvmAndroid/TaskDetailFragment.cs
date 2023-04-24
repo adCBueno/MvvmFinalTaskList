@@ -60,7 +60,20 @@ namespace ListMvvmAndroid
 
             doneButton.Click += (s, e) =>
             {
-               
+                if (_viewModel.ToggleCompleteCommand.CanExecute(null))
+                {
+                    _viewModel.ToggleCompleteCommand.Execute(null);
+                    if (_taskItem.IsComplete)
+                    {
+                        view.Background = ContextCompat.GetDrawable(this.Context, Resource.Drawable.completed_task_background);
+                        doneButton.Text = "Deshacer";
+                    }
+                    else
+                    {
+                        view.Background = ContextCompat.GetDrawable(this.Context, Resource.Drawable.incomplete_task_background);
+                        doneButton.Text = "Hecho";
+                    }
+                }
             };
 
             return view;
@@ -68,15 +81,12 @@ namespace ListMvvmAndroid
 
         public void UpdateData(TaskItem taskItem)
         {
-
             _taskItem = taskItem;
             if (View != null)
             {
                 TextView titleTextView = View.FindViewById<TextView>(Resource.Id.titleTextView);
                 TextView descriptionTextView = View.FindViewById<TextView>(Resource.Id.descriptionTextView);
                 TextView categoryTextView = View.FindViewById<TextView>(Resource.Id.categoryTextView);
-                Button doneButton = View.FindViewById<Button>(Resource.Id.doneButton);
-
                 titleTextView.Text = _taskItem.Title;
                 descriptionTextView.Text = _taskItem.Description;
                 categoryTextView.Text = _taskItem.Category;

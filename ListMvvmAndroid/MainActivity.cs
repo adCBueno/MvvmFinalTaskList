@@ -78,7 +78,7 @@ namespace ListMvvmAndroid
                 TaskDetailFragment taskDetailFragment = (TaskDetailFragment)SupportFragmentManager.FindFragmentByTag("TaskDetailFragment");
                 if (taskDetailFragment == null)
                 {
-                    taskDetailFragment = TaskDetailFragment.NewInstance(selectedTask);
+                    taskDetailFragment = TaskDetailFragment.NewInstance(selectedTask, _viewModel);
                     SupportFragmentManager.BeginTransaction()
                         .AddToBackStack(null)
                         .Add(Android.Resource.Id.Content, taskDetailFragment, "TaskDetailFragment")
