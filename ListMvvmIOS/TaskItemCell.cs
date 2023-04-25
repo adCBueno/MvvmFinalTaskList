@@ -19,11 +19,11 @@ namespace ListMvvmiOS
 
             if (taskItem.IsComplete)
             {
-                BackgroundColor = UIColor.Green;
+                // borde verde
             }
             else
             {
-                BackgroundColor = UIColor.Red;
+                // borde rojo
             }
         }
     }

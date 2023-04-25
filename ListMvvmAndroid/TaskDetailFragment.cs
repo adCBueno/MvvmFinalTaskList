@@ -8,6 +8,8 @@ using Core;
 using Core.ViewModels;
 using Android.App;
 using Android.Graphics;
+using System.ComponentModel;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ListMvvmAndroid
 {
@@ -17,16 +19,28 @@ namespace ListMvvmAndroid
         private MainViewModel _mainViewModel;
         private DetailViewModel _viewModel;
         private Button doneButton;
+        private EventHandler updateDoneButtonHandler;
 
-        public static TaskDetailFragment NewInstance(TaskItem taskItem, MainViewModel mainViewModel)
+        public TaskDetailFragment(TaskItem taskItem, MainViewModel mainViewModel)
         {
-            TaskDetailFragment fragment = new TaskDetailFragment
+            _taskItem = taskItem;
+            _mainViewModel = mainViewModel;
+            _viewModel = new DetailViewModel(taskItem, mainViewModel);
+            _viewModel.PropertyChanged += ViewModel_PropertyChanged;
+        }
+
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(_viewModel.IsComplete))
             {
-                _taskItem = taskItem,
-                _mainViewModel = mainViewModel,
-                _viewModel = new DetailViewModel(taskItem, mainViewModel)
-            };
-            return fragment;
+                UpdateDoneButton();
+            }
+        }
+
+        public override void OnDestroyView()
+        {
+            base.OnDestroyView();
+            _viewModel.IsCompleteChanged -= updateDoneButtonHandler;
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -44,14 +58,18 @@ namespace ListMvvmAndroid
             descriptionTextView.Text = _taskItem.Description;
             categoryTextView.Text = _taskItem.Category;
 
-            UpdateDoneButton();
-
             doneButton.Click += (s, e) =>
             {
                 _viewModel.ToggleCompleteCommand.Execute(null);
-                UpdateDoneButton();
                 ParentFragmentManager.PopBackStack();
             };
+
+            updateDoneButtonHandler = (s, e) =>
+            {
+                UpdateDoneButton();
+            };
+
+            _viewModel.IsCompleteChanged += updateDoneButtonHandler;
 
             deleteTaskButton.Click += (s, e) =>
             {
@@ -62,11 +80,16 @@ namespace ListMvvmAndroid
                 {
                     _mainViewModel.Items.Remove(_taskItem);
                     Toast.MakeText(Activity, Constants.Constants.MessageDeleteTaskSuccess, ToastLength.Short).Show();
-                    ParentFragmentManager.PopBackStack();                    
-                });                
-                builder.SetNegativeButton(Constants.Constants.No, (sender, args) => {});
+                    ParentFragmentManager.PopBackStack();
+                });
+                builder.SetNegativeButton(Constants.Constants.No, (sender, args) => { });
                 AlertDialog dialog = builder.Create();
                 dialog.Show();
+            };
+
+            _viewModel.IsCompleteChanged += (s, e) =>
+            {
+                UpdateDoneButton();
             };
 
             return view;
@@ -88,7 +111,7 @@ namespace ListMvvmAndroid
 
         private void UpdateDoneButton()
         {
-            if (_taskItem.IsComplete)
+            if (_viewModel.IsComplete)
             {
                 doneButton.Text = Constants.Constants.Pending;
             }

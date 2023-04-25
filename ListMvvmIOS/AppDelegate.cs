@@ -14,9 +14,6 @@ namespace ListMvvmIOS
         [Export ("application:didFinishLaunchingWithOptions:")]
         public bool FinishedLaunching (UIApplication application, NSDictionary launchOptions)
         {
-            Window = new UIWindow(UIScreen.MainScreen.Bounds);
-            Window.RootViewController = new UINavigationController(new ViewController());
-            Window.MakeKeyAndVisible();
 
             return true;
         }
