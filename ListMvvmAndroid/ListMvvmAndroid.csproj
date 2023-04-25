@@ -65,6 +65,7 @@
     <Compile Include="TaskDetailFragment.cs" />
     <Compile Include="TaskItemAdapter.cs" />
     <Compile Include="Constants\Constants.cs" />
+    <Compile Include="Services\INavigationService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -129,6 +130,7 @@
   <ItemGroup>
     <Folder Include="Resources\drawable\" />
     <Folder Include="Constants\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.2.0.5" />

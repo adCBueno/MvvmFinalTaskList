@@ -10,6 +10,7 @@ using Android.App;
 using Android.Graphics;
 using System.ComponentModel;
 using static System.Net.Mime.MediaTypeNames;
+using ListMvvmAndroid.Services;
 
 namespace ListMvvmAndroid
 {
@@ -20,14 +21,17 @@ namespace ListMvvmAndroid
         private DetailViewModel _viewModel;
         private Button doneButton;
         private EventHandler updateDoneButtonHandler;
+        private INavigationService _navigationService;
 
-        public TaskDetailFragment(TaskItem taskItem, MainViewModel mainViewModel)
+        public TaskDetailFragment(TaskItem taskItem, MainViewModel mainViewModel, INavigationService navigationService)
         {
             _taskItem = taskItem;
             _mainViewModel = mainViewModel;
+            _navigationService = navigationService;
             _viewModel = new DetailViewModel(taskItem, mainViewModel);
             _viewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
+
 
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
