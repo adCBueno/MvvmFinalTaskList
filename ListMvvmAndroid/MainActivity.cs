@@ -1,25 +1,23 @@
-﻿using System;
-using Android.App;
-using Android.OS;
+﻿using Android.OS;
 using Android.Runtime;
-using Android.Views;
-using AndroidX.AppCompat.Widget;
-using AndroidX.AppCompat.App;
-using Google.Android.Material.FloatingActionButton;
-using Google.Android.Material.Snackbar;
 using Android.Widget;
-using Xamarin.Essentials;
-using Core.ViewModels;
-using AndroidX.Fragment.App;
-using Core;
+using AndroidX.AppCompat.App;
 using AndroidX.Lifecycle;
+using AndroidX.RecyclerView.Widget;
+using AndroidX.SwipeRefreshLayout.Widget;
+using Core;
+using Core.ViewModels;
+using ListMvvmAndroid.Services;
+using static Android.Content.ClipData;
 
 namespace ListMvvmAndroid
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
     public class MainActivity : AppCompatActivity
     {
         private MainViewModel _viewModel;
+        private TaskItemAdapter _adapter;
+        private INavigationService _navigationService;
+        private TaskItem _taskItem;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -81,7 +79,9 @@ namespace ListMvvmAndroid
                 TaskDetailFragment taskDetailFragment = (TaskDetailFragment)SupportFragmentManager.FindFragmentByTag(Constants.Constants.TaskDetailFragment);
                 if (taskDetailFragment == null)
                 {
-                    taskDetailFragment = new TaskDetailFragment(selectedTask, _viewModel);
+                    TaskItem item = _viewModel.Items[e.Position];
+                    _navigationService.GoToTaskDetail(item, _viewModel);
+                    taskDetailFragment = new TaskDetailFragment(selectedTask, _viewModel, _navigationService);
                     SupportFragmentManager.BeginTransaction()
                         .AddToBackStack(null)
                         .Add(Android.Resource.Id.Content, taskDetailFragment, Constants.Constants.TaskDetailFragment)
@@ -92,6 +92,12 @@ namespace ListMvvmAndroid
                     taskDetailFragment.UpdateData(selectedTask);
                 }
             };
+
+            _navigationService = new NavigationService(SupportFragmentManager);
+            TaskDetailFragment taskListFragment = new TaskDetailFragment( _taskItem, _viewModel, _navigationService);
+            SupportFragmentManager.BeginTransaction()
+                .Add(Android.Resource.Id.Content, taskListFragment, Constants.Constants.TaskDetailFragment)
+                .Commit();
 
             _viewModel.Items.CollectionChanged += (s, e) =>
             {
