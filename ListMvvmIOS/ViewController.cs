@@ -12,55 +12,113 @@ namespace ListMvvmIOS
 {
     public partial class ViewController : UIViewController
     {
-        private MainViewModel _viewModel;
-        private UITextField _titleTextField;
-        private UITextField _descriptionTextField;
-        private UITextField _categoryTextField;
-        private UIButton _submitButton;
-        private UIButton _clearListButton;
-        private UITableView _tableView;
+        private MainViewModel viewModel;
 
-        public ViewController()
+        public ViewController (IntPtr handle) : base (handle)
         {
-            _viewModel = new MainViewModel();
+            viewModel = new MainViewModel();
+        }
+
+        public override void PrepareForSegue(UIStoryboardSegue segue, NSObject sender)
+        {
+            if (segue.Identifier == "goToDetails")
+            {
+                var indexPath = (NSIndexPath)sender;
+                TaskDetailViewController controller = (TaskDetailViewController)segue.DestinationViewController;
+                controller.Task = viewModel.Items[indexPath.Row];
+                DetailViewModel detailViewModel = new DetailViewModel(viewModel.Items[indexPath.Row], viewModel);
+                controller.viewModel = detailViewModel;
+                controller.mainViewModel = viewModel;
+            }
         }
 
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
 
-            View.BackgroundColor = UIColor.White;
+            tasksTableView.RegisterClassForCellReuse(typeof(TaskItemCell), TaskItemCell.Key);
+            tasksTableView.DataSource = new ViewControllerTableViewDataSource(this);
+            tasksTableView.Delegate = new ViewControllerTableViewDelegate(this);
 
-            _titleTextField = new UITextField
+            viewModel.PropertyChanged += UpdateUi;
+            viewModel.Items.CollectionChanged += (s, e) =>
             {
-                Placeholder = "Task title",
-                BorderStyle = UITextBorderStyle.RoundedRect
+                tasksTableView.ReloadData();
             };
 
-            _descriptionTextField = new UITextField
+
+            titleTextField.EditingChanged += (sender, e) =>
             {
-                Placeholder = "Task description",
-                BorderStyle = UITextBorderStyle.RoundedRect
+                viewModel.Text = titleTextField.Text;
+                addButton.Enabled = viewModel.SubmitCommand.CanExecute(null);
+                clearButton.Enabled = viewModel.ClearListCommand.CanExecute(null);
+            };
+            descriptionTextField.EditingChanged += (sender, e) =>
+            {
+                viewModel.Description = descriptionTextField.Text;
+            };
+            categoryTextField.EditingChanged += (sender, e) =>
+            {
+                viewModel.Category = categoryTextField.Text;
+            };
+            
+
+            addButton.TouchUpInside += (s, e) =>
+            {
+                viewModel.SubmitCommand.Execute(null);
+                titleTextField.Text = "";
+                descriptionTextField.Text = "";
+                categoryTextField.Text = "";
             };
 
-            _categoryTextField = new UITextField
+            clearButton.TouchUpInside += (s, e) =>
             {
-                Placeholder = "Task category",
-                BorderStyle = UITextBorderStyle.RoundedRect
+                viewModel.ClearListCommand.Execute(null);
             };
-
-            _submitButton = UIButton.FromType(UIButtonType.System);
-            _submitButton.SetTitle("Add task", UIControlState.Normal);
-
-            _clearListButton = UIButton.FromType(UIButtonType.System);
-            _clearListButton.SetTitle("Clear list", UIControlState.Normal);
-
-            _tableView = new UITableView();
         }
 
-        private void AddSubviewsAndConstraints()
+        public void UpdateUi(object sender, EventArgs e)
         {
+
         }
-                
+
+        class ViewControllerTableViewDataSource : UITableViewDataSource
+        {
+            private ViewController viewController;
+
+            public ViewControllerTableViewDataSource(ViewController viewController)
+            {
+                this.viewController = viewController;
+            }
+
+            public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
+            {
+                var cell = tableView.DequeueReusableCell("TaskItemCell", indexPath) as TaskItemCell;
+                cell.UpdateCell(viewController.viewModel.Items[indexPath.Row]);
+                //cell.TextLabel.Text = viewController.viewModel.Items[indexPath.Row].Title;
+                return cell;
+            }
+
+            public override nint RowsInSection(UITableView tableView, nint section)
+            {
+                return viewController.viewModel.Items.Count;
+            }
+        }
+
+        class ViewControllerTableViewDelegate: UITableViewDelegate
+        {
+            private ViewController viewController;
+
+            public ViewControllerTableViewDelegate(ViewController viewController)
+            {
+                this.viewController = viewController;
+            }
+            public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
+            {
+
+                viewController.PerformSegue("goToDetails", indexPath);
+                tableView.DeselectRow(indexPath, true);
+            }
+        }
     }
 }

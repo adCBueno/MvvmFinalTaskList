@@ -1,4 +1,5 @@
-﻿using Core;
+﻿using System;
+using Core;
 using Foundation;
 using UIKit;
 
@@ -8,22 +9,22 @@ namespace ListMvvmiOS
     {
         public static readonly NSString Key = new NSString("TaskItemCell");
 
-        public TaskItemCell() : base(UITableViewCellStyle.Subtitle, Key)
+        public TaskItemCell(IntPtr handle) : base(handle)
         {
         }
 
         public void UpdateCell(TaskItem taskItem)
         {
             TextLabel.Text = taskItem.Title;
-            DetailTextLabel.Text = taskItem.Description;
 
+            Layer.BorderWidth = 2;
             if (taskItem.IsComplete)
             {
-                // borde verde
+                Layer.BorderColor = UIColor.Green.CGColor;
             }
             else
             {
-                // borde rojo
+                Layer.BorderColor = UIColor.LightGray.CGColor;
             }
         }
     }
