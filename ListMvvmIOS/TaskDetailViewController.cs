@@ -4,6 +4,7 @@ using System;
 using Core;
 using Core.ViewModels;
 using Foundation;
+using ListMvvmIOS.Util;
 using UIKit;
 
 namespace ListMvvmIOS
@@ -24,6 +25,7 @@ namespace ListMvvmIOS
 			titleLabel.Text = Task.Title;
 			descriptionLabel.Text = Task.Description;
 			categoryLabel.Text = Task.Category;
+            deleteButton.SetTitle(Constants.GetLocalizable(Constants.DeleteTaskLocalizable), UIControlState.Normal);
             UpdateDoneButton();
 			doneButton.TouchUpInside += (s, e) =>
 			{
@@ -35,12 +37,12 @@ namespace ListMvvmIOS
 
         private void ConfirmDelete(object sender, EventArgs e)
         {
-            var alert = UIAlertController.Create("Delete Task", "Are you sure you want delete this task?", UIAlertControllerStyle.Alert);
+            var alert = UIAlertController.Create(Constants.GetLocalizable(Constants.DeleteTaskLocalizable), Constants.GetLocalizable(Constants.DeleteTaskMsgLocalizable), UIAlertControllerStyle.Alert);
             alert.AddAction(
-                UIAlertAction.Create("No", UIAlertActionStyle.Cancel, null)
+                UIAlertAction.Create(Constants.GetLocalizable(Constants.NoLocalizable), UIAlertActionStyle.Cancel, null)
             );
             alert.AddAction(
-                UIAlertAction.Create("Yes", UIAlertActionStyle.Destructive, (action) =>
+                UIAlertAction.Create(Constants.GetLocalizable(Constants.YesLocalizable), UIAlertActionStyle.Destructive, (action) =>
                 {
                     mainViewModel.Items.Remove(Task);
                     NavigationController.PopViewController(true);
@@ -53,11 +55,11 @@ namespace ListMvvmIOS
         {
             if (viewModel.IsComplete)
             {
-                doneButton.SetTitle("Pending", UIControlState.Normal);
+                doneButton.SetTitle(Constants.GetLocalizable(Constants.PendingLocalizable), UIControlState.Normal);
             }
             else
             {
-                doneButton.SetTitle("Done", UIControlState.Normal);
+                doneButton.SetTitle(Constants.GetLocalizable(Constants.DoneLocalizable), UIControlState.Normal);
             }
         }
     }

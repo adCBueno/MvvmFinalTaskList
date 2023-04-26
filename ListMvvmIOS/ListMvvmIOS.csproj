@@ -119,6 +119,9 @@
     </ItemGroup>
     <ItemGroup>
         <Folder Include="Resources\" />
+        <Folder Include="Resources\en.lproj\" />
+        <Folder Include="Resources\es.lproj\" />
+        <Folder Include="Util\" />
     </ItemGroup>
     <ItemGroup>
         <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -141,12 +144,17 @@
         <Compile Include="TaskDetailViewController.designer.cs">
           <DependentUpon>TaskDetailViewController.cs</DependentUpon>
         </Compile>
+        <Compile Include="Util\Constants.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Core\Core.csproj">
         <Project>{77668AEB-4A47-41D5-889B-6120F8EBFD74}</Project>
         <Name>Core</Name>
       </ProjectReference>
+    </ItemGroup>
+    <ItemGroup>
+      <BundleResource Include="Resources\en.lproj\Localizable.strings" />
+      <BundleResource Include="Resources\es.lproj\Localizable.strings" />
     </ItemGroup>
     <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

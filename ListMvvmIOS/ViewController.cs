@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using Foundation;
 using Core;
 using ListMvvmiOS;
+using ListMvvmIOS.Util;
 
 namespace ListMvvmIOS
 {
@@ -39,6 +40,12 @@ namespace ListMvvmIOS
             tasksTableView.RegisterClassForCellReuse(typeof(TaskItemCell), TaskItemCell.Key);
             tasksTableView.DataSource = new ViewControllerTableViewDataSource(this);
             tasksTableView.Delegate = new ViewControllerTableViewDelegate(this);
+
+            titleTextField.Placeholder = Constants.GetLocalizable(Constants.TitleLocalizable);
+            descriptionTextField.Placeholder = Constants.GetLocalizable(Constants.DescriptionLocalizable);
+            categoryTextField.Placeholder = Constants.GetLocalizable(Constants.CategoryLocalizable);
+            addButton.SetTitle(Constants.GetLocalizable(Constants.AddLocalizable), UIControlState.Normal);
+            clearButton.SetTitle(Constants.GetLocalizable(Constants.CleanLocalizable), UIControlState.Normal);
 
             viewModel.PropertyChanged += UpdateUi;
             viewModel.Items.CollectionChanged += (s, e) =>

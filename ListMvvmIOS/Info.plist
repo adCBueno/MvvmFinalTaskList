@@ -44,6 +44,13 @@
     <string>Main</string>
     <key>UIMainStoryboardFile~ipad</key>
     <string>Main</string>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>en</string>
+    <key>CFBundleLocalizations</key>
+    <array>
+        <string>en</string>
+        <string>es</string>
+    </array>
     <key>UIRequiredDeviceCapabilities</key>
     <array>
         <string>armv7</string>
