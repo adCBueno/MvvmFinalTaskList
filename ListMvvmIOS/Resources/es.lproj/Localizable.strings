@@ -1,0 +1,11 @@
+﻿"Title" = "Titulo";
+"Description" = "Descripcion";
+"Category" = "Categoria";
+"Add" = "Agregar";
+"Clean" = "Limpiar";
+"Done" = "Hecho";
+"Pending" = "Pendiente";
+"DeleteTask" = "Eliminar Tarea";
+"DeleteTaskMsg" = "¿Estas seguro que deseas eliminar esta tarea?";
+"Yes" = "Si";
+"No" = "No";
