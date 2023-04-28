@@ -1,6 +1,7 @@
 ﻿using Foundation;
 using UIKit;
 using Google.Maps;
+using Xamarin.Essentials;
 
 namespace ListMvvmIOS
 {
@@ -15,6 +16,7 @@ namespace ListMvvmIOS
         [Export ("application:didFinishLaunchingWithOptions:")]
         public bool FinishedLaunching (UIApplication application, NSDictionary launchOptions)
         {
+            Google.Maps.MapServices.ProvideApiKey("AIzaSyDyamw-jnzyOlbphobo34RRG_k7ZD2F_To");
             return true;
         }
 

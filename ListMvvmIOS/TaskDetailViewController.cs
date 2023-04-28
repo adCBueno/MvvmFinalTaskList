@@ -9,6 +9,7 @@ using Foundation;
 using ListMvvmIOS.Util;
 using UIKit;
 using CoreGraphics;
+using Xamarin.Essentials;
 
 namespace ListMvvmIOS
 {
@@ -89,7 +90,7 @@ namespace ListMvvmIOS
             // Establecer restricciones para el mapa
             mapView.TranslatesAutoresizingMaskIntoConstraints = false;
             mapView.TopAnchor.ConstraintEqualTo(View.SafeAreaLayoutGuide.TopAnchor).Active = true;
-            mapView.BottomAnchor.ConstraintEqualTo(View.SafeAreaLayoutGuide.BottomAnchor).Active = true;
+            mapView.BottomAnchor.ConstraintEqualTo(doneButton.TopAnchor, -10).Active = true;
             mapView.LeadingAnchor.ConstraintEqualTo(View.LeadingAnchor).Active = true;
             mapView.TrailingAnchor.ConstraintEqualTo(View.TrailingAnchor).Active = true;
         }

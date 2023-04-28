@@ -52,6 +52,7 @@ namespace Core.ViewModels
 
         private void Submit()
         {
+            await GetLocationAsync();
             var task = new TaskItem
             {
                 Title = Text,
