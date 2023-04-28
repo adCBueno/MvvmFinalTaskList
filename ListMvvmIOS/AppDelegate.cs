@@ -1,5 +1,6 @@
 ﻿using Foundation;
 using UIKit;
+using Google.Maps;
 
 namespace ListMvvmIOS
 {
@@ -14,7 +15,6 @@ namespace ListMvvmIOS
         [Export ("application:didFinishLaunchingWithOptions:")]
         public bool FinishedLaunching (UIApplication application, NSDictionary launchOptions)
         {
-
             return true;
         }
 
@@ -37,5 +37,3 @@ namespace ListMvvmIOS
         }
     }
 }
-
-

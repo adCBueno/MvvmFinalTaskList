@@ -12,6 +12,8 @@ namespace Core.ViewModels
         private readonly MainViewModel _mainViewModel;
         public event EventHandler IsCompleteChanged;
         private DetailViewModel _viewModel;
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
 
         public ICommand ToggleCompleteCommand { get; }
 
@@ -21,6 +23,9 @@ namespace Core.ViewModels
             _mainViewModel = mainViewModel;
             ToggleCompleteCommand = new RelayCommand(TaskComplete);
             OnPropertyChanged(nameof(IsComplete));
+
+            Latitude = taskItem.Latitude;
+            Longitude = taskItem.Longitude;
         }
 
         public bool IsComplete

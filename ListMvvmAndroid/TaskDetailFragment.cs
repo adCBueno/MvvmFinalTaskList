@@ -11,10 +11,12 @@ using Android.Graphics;
 using System.ComponentModel;
 using static System.Net.Mime.MediaTypeNames;
 using ListMvvmAndroid.Services;
+using Android.Gms.Maps;
+using Android.Gms.Maps.Model;
 
 namespace ListMvvmAndroid
 {
-    public class TaskDetailFragment : AndroidX.Fragment.App.Fragment
+    public class TaskDetailFragment : AndroidX.Fragment.App.Fragment, IOnMapReadyCallback
     {
         private TaskItem _taskItem;
         private MainViewModel _mainViewModel;
@@ -22,6 +24,10 @@ namespace ListMvvmAndroid
         private Button doneButton;
         private EventHandler updateDoneButtonHandler;
         private INavigationService _navigationService;
+        private MapView mapView;
+        private GoogleMap _googleMap;
+        private double latitude;
+        private double longitude;
 
         public TaskDetailFragment(TaskItem taskItem, MainViewModel mainViewModel, INavigationService navigationService)
         {
@@ -29,6 +35,9 @@ namespace ListMvvmAndroid
             _mainViewModel = mainViewModel;
             _viewModel = new DetailViewModel(taskItem, mainViewModel);
             _viewModel.PropertyChanged += ViewModel_PropertyChanged;
+            latitude = _mainViewModel.Latitude;
+            longitude = _mainViewModel.Longitude;
+            _mainViewModel.SetLocation(taskItem.Latitude, taskItem.Longitude);
         }
 
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -42,7 +51,10 @@ namespace ListMvvmAndroid
         public override void OnDestroyView()
         {
             base.OnDestroyView();
-            _viewModel.IsCompleteChanged -= updateDoneButtonHandler;
+            if (mapView != null)
+            {
+                mapView.OnDestroy();
+            }
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -94,8 +106,27 @@ namespace ListMvvmAndroid
                 UpdateDoneButton();
             };
 
+            mapView = view.FindViewById<MapView>(Resource.Id.mapView);
+            mapView.GetMapAsync(this);
+            mapView.OnCreate(savedInstanceState);
+            mapView.GetMapAsync(this);
             return view;
         }
+
+        public void OnMapReady(GoogleMap googleMap)
+        {
+            _googleMap = googleMap;
+            LatLng myLocation = new LatLng(latitude, longitude);
+            _googleMap.AddMarker(new MarkerOptions().SetPosition(myLocation).SetTitle("Mi ubicación"));
+            _googleMap.MoveCamera(CameraUpdateFactory.NewLatLngZoom(myLocation, 15));
+        }
+
+        public override void OnSaveInstanceState(Bundle outState)
+        {
+            base.OnSaveInstanceState(outState);
+            mapView.OnSaveInstanceState(outState);
+        }
+
 
         public void UpdateData(TaskItem taskItem)
         {

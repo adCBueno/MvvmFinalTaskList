@@ -14,6 +14,7 @@ using AndroidX.Fragment.App;
 using Core;
 using AndroidX.Lifecycle;
 using ListMvvmAndroid.Services;
+using System.Threading.Tasks;
 
 namespace ListMvvmAndroid
 {
@@ -58,8 +59,14 @@ namespace ListMvvmAndroid
                 _viewModel.Category = categoryEditText.Text;
             };
 
-            submitButton.Click += (s, e) =>
+            submitButton.Click += async (s, e) =>
             {
+                var location = await GetLocationAsync();
+                if (location != null)
+                {
+                    _viewModel.SetLocation(location.Latitude, location.Longitude);
+                }
+
                 if (_viewModel.SubmitCommand.CanExecute(null))
                 {
                     _viewModel.SubmitCommand.Execute(null);
@@ -69,6 +76,7 @@ namespace ListMvvmAndroid
                 descriptionEditText.Text = "";
                 categoryEditText.Text = "";
             };
+
 
             clearListButton.Click += (s, e) =>
             {
@@ -96,6 +104,12 @@ namespace ListMvvmAndroid
         {
             TaskItemAdapter adapter = new TaskItemAdapter(this, _viewModel.Items);
             listView.Adapter = adapter;
+        }
+
+        private async Task<Location> GetLocationAsync()
+        {
+            var location = await Geolocation.GetLocationAsync();
+            return location;
         }
     }
 }

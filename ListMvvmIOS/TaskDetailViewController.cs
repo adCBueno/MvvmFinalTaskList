@@ -2,10 +2,13 @@
 
 using System;
 using Core;
+using Google.Maps;
+using CoreLocation;
 using Core.ViewModels;
 using Foundation;
 using ListMvvmIOS.Util;
 using UIKit;
+using CoreGraphics;
 
 namespace ListMvvmIOS
 {
@@ -14,6 +17,7 @@ namespace ListMvvmIOS
 		public TaskItem Task;
         public DetailViewModel viewModel;
         public MainViewModel mainViewModel;
+        private MapView mapView;
 
         public TaskDetailViewController (IntPtr handle) : base (handle)
 		{
@@ -22,10 +26,12 @@ namespace ListMvvmIOS
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-			titleLabel.Text = Task.Title;
+            SetupGoogleMap();
+            UpdateDoneButton();
+            titleLabel.Text = Task.Title;
 			descriptionLabel.Text = Task.Description;
 			categoryLabel.Text = Task.Category;
-            deleteButton.SetTitle(Constants.GetLocalizable(Constants.DeleteTaskLocalizable), UIControlState.Normal);
+            deleteButton.SetTitle(ConstantVariables.GetLocalizable(ConstantVariables.DeleteTaskLocalizable), UIControlState.Normal);
             UpdateDoneButton();
 			doneButton.TouchUpInside += (s, e) =>
 			{
@@ -37,12 +43,12 @@ namespace ListMvvmIOS
 
         private void ConfirmDelete(object sender, EventArgs e)
         {
-            var alert = UIAlertController.Create(Constants.GetLocalizable(Constants.DeleteTaskLocalizable), Constants.GetLocalizable(Constants.DeleteTaskMsgLocalizable), UIAlertControllerStyle.Alert);
+            var alert = UIAlertController.Create(ConstantVariables.GetLocalizable(ConstantVariables.DeleteTaskLocalizable), ConstantVariables.GetLocalizable(ConstantVariables.DeleteTaskMsgLocalizable), UIAlertControllerStyle.Alert);
             alert.AddAction(
-                UIAlertAction.Create(Constants.GetLocalizable(Constants.NoLocalizable), UIAlertActionStyle.Cancel, null)
+                UIAlertAction.Create(ConstantVariables.GetLocalizable(ConstantVariables.NoLocalizable), UIAlertActionStyle.Cancel, null)
             );
             alert.AddAction(
-                UIAlertAction.Create(Constants.GetLocalizable(Constants.YesLocalizable), UIAlertActionStyle.Destructive, (action) =>
+                UIAlertAction.Create(ConstantVariables.GetLocalizable(ConstantVariables.YesLocalizable), UIAlertActionStyle.Destructive, (action) =>
                 {
                     mainViewModel.Items.Remove(Task);
                     NavigationController.PopViewController(true);
@@ -55,12 +61,60 @@ namespace ListMvvmIOS
         {
             if (viewModel.IsComplete)
             {
-                doneButton.SetTitle(Constants.GetLocalizable(Constants.PendingLocalizable), UIControlState.Normal);
+                doneButton.SetTitle(ConstantVariables.GetLocalizable(ConstantVariables.PendingLocalizable), UIControlState.Normal);
             }
             else
             {
-                doneButton.SetTitle(Constants.GetLocalizable(Constants.DoneLocalizable), UIControlState.Normal);
+                doneButton.SetTitle(ConstantVariables.GetLocalizable(ConstantVariables.DoneLocalizable), UIControlState.Normal);
             }
         }
+
+        private void SetupGoogleMap()
+        {
+            // Establecer las coordenadas y el nivel de zoom
+            var camera = CameraPosition.FromCamera(latitude: Task.Latitude, longitude: Task.Longitude, zoom: 15);
+            mapView = MapView.FromCamera(CGRect.Empty, camera);
+
+            // Añadir un marcador en la posición deseada
+            var marker = new Marker()
+            {
+                Position = new CLLocationCoordinate2D(Task.Latitude, Task.Longitude),
+                Title = Task.Title,
+                Map = mapView
+            };
+
+            // Añadir el mapa como subvista
+            View.AddSubview(mapView);
+
+            // Establecer restricciones para el mapa
+            mapView.TranslatesAutoresizingMaskIntoConstraints = false;
+            mapView.TopAnchor.ConstraintEqualTo(View.SafeAreaLayoutGuide.TopAnchor).Active = true;
+            mapView.BottomAnchor.ConstraintEqualTo(View.SafeAreaLayoutGuide.BottomAnchor).Active = true;
+            mapView.LeadingAnchor.ConstraintEqualTo(View.LeadingAnchor).Active = true;
+            mapView.TrailingAnchor.ConstraintEqualTo(View.TrailingAnchor).Active = true;
+        }
+
+        public override void ViewWillAppear(bool animated)
+        {
+            base.ViewWillAppear(animated);
+            mapView?.StartRendering();
+        }
+
+        public override void ViewWillDisappear(bool animated)
+        {
+            base.ViewWillDisappear(animated);
+            mapView?.StopRendering();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                mapView?.Dispose();
+                mapView = null;
+            }
+            base.Dispose(disposing);
+        }
+
     }
 }

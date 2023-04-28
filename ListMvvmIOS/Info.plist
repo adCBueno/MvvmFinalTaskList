@@ -2,6 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Esta aplicación necesita acceder a tu ubicación para mostrar el mapa.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Esta aplicación necesita acceder a tu ubicación para mostrar el mapa.</string>
+    <key>GMSServicesApiKey</key>
+    <string>AIzaSyDyamw-jnzyOlbphobo34RRG_k7ZD2F_To</string>
+    <key>io.flutter.embedded_views_preview</key>
+    <true/>
     <key>CFBundleDisplayName</key>
     <string>ListMvvmIOS</string>
     <key>CFBundleIdentifier</key>

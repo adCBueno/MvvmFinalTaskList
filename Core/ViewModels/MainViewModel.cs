@@ -4,6 +4,8 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Core;
+using System.Threading.Tasks;
+using Xamarin.Essentials;
 
 namespace Core.ViewModels
 {
@@ -31,25 +33,40 @@ namespace Core.ViewModels
             set => SetProperty(ref _category, value);
         }
 
+        public double Latitude { get; private set; }
+        public double Longitude { get; private set; }
+
         public ObservableCollection<TaskItem> Items { get; }
 
         public ICommand SubmitCommand { get; }
         public ICommand ClearListCommand { get; }
+        public ICommand GetLocationCommand { get; }
 
         public MainViewModel()
         {
             Items = new ObservableCollection<TaskItem>();
             SubmitCommand = new RelayCommand(Submit, CanSubmit);
             ClearListCommand = new RelayCommand(ClearList);
+            GetLocationCommand = new AsyncRelayCommand(GetLocationAsync);
         }
 
         private void Submit()
         {
-            var newItem = new TaskItem { Title = Text, Description = Description, Category = Category };
-            Items.Add(newItem);
+            var task = new TaskItem
+            {
+                Title = Text,
+                Description = Description,
+                Category = Category,
+                Latitude = Latitude,
+                Longitude = Longitude
+            };
+
+            Items.Add(task);
             Text = string.Empty;
             Description = string.Empty;
             Category = string.Empty;
+            Latitude = 0;
+            Longitude = 0;
         }
 
         private bool CanSubmit()
@@ -70,6 +87,22 @@ namespace Core.ViewModels
                 Items[index] = updatedTaskItem;
                 OnPropertyChanged(nameof(Items));
             }
+        }
+
+        private async Task GetLocationAsync()
+        {
+            var location = await Geolocation.GetLocationAsync();
+            if (location != null)
+            {
+                Latitude = location.Latitude;
+                Longitude = location.Longitude;
+            }
+        }
+
+        public void SetLocation(double latitude, double longitude)
+        {
+            Latitude = latitude;
+            Longitude = longitude;
         }
     }
 }

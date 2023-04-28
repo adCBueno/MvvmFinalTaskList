@@ -33,6 +33,11 @@
         android:textAppearance="?attr/textAppearanceBody1"
         android:gravity="center_horizontal" />
 
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
 	<Button
         android:id="@+id/doneButton"
 		android:layout_width="200dp"

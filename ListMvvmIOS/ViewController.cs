@@ -41,11 +41,11 @@ namespace ListMvvmIOS
             tasksTableView.DataSource = new ViewControllerTableViewDataSource(this);
             tasksTableView.Delegate = new ViewControllerTableViewDelegate(this);
 
-            titleTextField.Placeholder = Constants.GetLocalizable(Constants.TitleLocalizable);
-            descriptionTextField.Placeholder = Constants.GetLocalizable(Constants.DescriptionLocalizable);
-            categoryTextField.Placeholder = Constants.GetLocalizable(Constants.CategoryLocalizable);
-            addButton.SetTitle(Constants.GetLocalizable(Constants.AddLocalizable), UIControlState.Normal);
-            clearButton.SetTitle(Constants.GetLocalizable(Constants.CleanLocalizable), UIControlState.Normal);
+            titleTextField.Placeholder = ConstantVariables.GetLocalizable(ConstantVariables.TitleLocalizable);
+            descriptionTextField.Placeholder = ConstantVariables.GetLocalizable(ConstantVariables.DescriptionLocalizable);
+            categoryTextField.Placeholder = ConstantVariables.GetLocalizable(ConstantVariables.CategoryLocalizable);
+            addButton.SetTitle(ConstantVariables.GetLocalizable(ConstantVariables.AddLocalizable), UIControlState.Normal);
+            clearButton.SetTitle(ConstantVariables.GetLocalizable(ConstantVariables.CleanLocalizable), UIControlState.Normal);
 
             viewModel.PropertyChanged += UpdateUi;
             viewModel.Items.CollectionChanged += (s, e) =>

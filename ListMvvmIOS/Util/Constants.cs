@@ -3,7 +3,7 @@ using Foundation;
 
 namespace ListMvvmIOS.Util
 {
-	public static class Constants
+	public static class ConstantVariables
 	{
 		public static string TitleLocalizable = "Title";
         public static string DescriptionLocalizable = "Description";
